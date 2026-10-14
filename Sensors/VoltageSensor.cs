@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Models;
 
-namespace lab3
+namespace Sensors
 {
     public class VoltageSensor : Sensor
     {

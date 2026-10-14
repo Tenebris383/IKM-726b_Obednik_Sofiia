@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Models;
 
-namespace lab3
+namespace Sensors
 {
     public class PressureSensor : Sensor
     {
@@ -13,17 +11,16 @@ namespace lab3
 
         public override void ReadValue()
         {
-            if (this.isBeforeTurbine)
+            if (Name == "Pressure before turbine")
             {
                 Value = Plant.PressureBefore;
-                Console.WriteLine($"Sensor {Name} measured pressure {Value:F2} Mpa.");
             }
             else
             {
                 Value = Plant.PressureAfter;
-                Console.WriteLine($"Sensor {Name} measured pressure {Value:F2} Mpa.");
             }
 
+            Console.WriteLine($"Sensor {Name} measured pressure {Value:F2} MPa.");
         }
     }
 

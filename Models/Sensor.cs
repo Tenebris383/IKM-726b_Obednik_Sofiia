@@ -1,5 +1,6 @@
-﻿using System;
-namespace lab3;
+﻿using Models;
+
+namespace Sensors;
 public abstract class Sensor
 {
 	public int SensorId { get; set; }
@@ -14,5 +15,5 @@ public abstract class Sensor
 		Plant = plant;
 	}
 
-	public abstract void ReadValue();
+    public abstract void ReadValue();
 }

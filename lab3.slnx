@@ -1,4 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/" />
+  <Project Path="Control/Control.csproj" Id="f184a5d5-3665-46c4-b593-1ada4d4e555b" />
   <Project Path="lab3/Obednik_IKM-M726b.csproj" />
+  <Project Path="Models/Models.csproj" Id="baa80383-1ffe-4dcf-b37e-99608b899337" />
+  <Project Path="Sensors/Sensors.csproj" Id="12be3daa-6ec7-491b-a185-4d7c827a797b" />
 </Solution>

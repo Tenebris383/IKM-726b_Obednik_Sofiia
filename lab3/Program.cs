@@ -1,9 +1,9 @@
-﻿using lab3;
-using Obednik_IKM_M726b.Mqtt;
-using System.Numerics;
+﻿using Obednik_IKM_M726b.Mqtt;
 using MQTTnet;
 using System.Text.Json;
-using System.Diagnostics.Metrics;
+using Control;
+using Models;
+using Sensors;
 
 public class Program
 {
@@ -11,7 +11,19 @@ public class Program
     {
         HydroelectricPowerPlant hydroelectricPowerPlant = new HydroelectricPowerPlant();
 
-        hydroelectricPowerPlant.CreateAlarms();
+        List<Alarm> alarms = new List<Alarm>
+        {
+            new Alarm("Upper Water Level", 0, 50),
+            new Alarm("Tail Water Level", 0, 30),
+            new Alarm("Water Flow", 0, 500),
+            new Alarm("Pressure Before Turbine", 0, 2.5),
+            new Alarm("Pressure After Turbine", 0, 0.6),
+            new Alarm("Turbine Speed", 0, 300),
+            new Alarm("Generator Voltage", 8.6, 23),
+            new Alarm("Generator Current", 0, 1000),
+            new Alarm("Gate Position", 0, 100)
+        };
+
         hydroelectricPowerPlant.Start();
 
         SensorConfiguration[] sensors = CreateSensors(hydroelectricPowerPlant);

@@ -1,7 +1,5 @@
-﻿using lab3;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Models;
+using Sensors;
 
 namespace Obednik_IKM_M726b.Mqtt;
 

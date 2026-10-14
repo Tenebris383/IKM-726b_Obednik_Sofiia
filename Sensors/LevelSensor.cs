@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Models;
 
-namespace lab3
+namespace Sensors
 {
     public class LevelSensor : Sensor
     {
@@ -14,16 +12,16 @@ namespace lab3
 
         public override void ReadValue()
         {
-            if (isUpperLevel) 
+            if (Name == "Higher level")
             {
                 Value = Plant.UpperLevel;
-                Console.WriteLine($"Sensor {Name} measured level {Value:F2} m.");
             }
             else
             {
                 Value = Plant.TailLevel;
-                Console.WriteLine($"Sensor {Name} measured level {Value:F2} m.");
             }
+
+            Console.WriteLine($"Sensor {Name} measured level {Value:F2} m.");
         }
 
     }

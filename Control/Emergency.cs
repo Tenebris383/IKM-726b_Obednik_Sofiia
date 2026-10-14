@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Control;
 
-namespace lab3
+namespace Models
 {
     public class Emergency : DiscreteOutput
     {
@@ -25,7 +23,7 @@ namespace lab3
             return false;
         }
 
-        public void CheckAll(HydroelectricPowerPlant plant)
+        public void CheckAll(HydroelectricPowerPlant plant, List<Alarm> alarms)
         {
             double[] values =
             {
@@ -42,11 +40,14 @@ namespace lab3
 
             bool emergency = false;
 
-            for (int i = 0; i < plant.Alarms.Count; i++)
+            for (int i = 0; i < alarms.Count; i++)
             {
-                if (CheckValue(plant.Alarms[i], values[i]))
+                alarms[i].Check(values[i]);
+
+                if (alarms[i].IsEmergency)
                 {
                     emergency = true;
+                    break;
                 }
             }
 
@@ -56,8 +57,7 @@ namespace lab3
         public string GetStatus()
         {
             if (Value)
-                return "Emergency";
-
+            return "Emergency";
             return "Normal";
         }
     }
