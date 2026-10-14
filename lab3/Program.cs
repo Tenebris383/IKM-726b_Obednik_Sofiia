@@ -1,71 +1,139 @@
 ﻿using lab3;
+using Obednik_IKM_M726b.Mqtt;
 using System.Numerics;
+using MQTTnet;
+using System.Text.Json;
+using System.Diagnostics.Metrics;
 
 public class Program
 {
-    public static void Main() 
+    public static async Task Main()
     {
         HydroelectricPowerPlant hydroelectricPowerPlant = new HydroelectricPowerPlant();
 
         hydroelectricPowerPlant.CreateAlarms();
-
         hydroelectricPowerPlant.Start();
 
-        PressureSensor pressureSensorBefore = new PressureSensor("Pressure before turbine", hydroelectricPowerPlant, true);
-        PressureSensor pressureSensorAfter = new PressureSensor("Pressure after turbine", hydroelectricPowerPlant, false);
-        LevelSensor levelSensorHead = new LevelSensor("Level in the headpond", hydroelectricPowerPlant, true);
-        LevelSensor levelSensorTail = new LevelSensor("Level in the tailrace", hydroelectricPowerPlant, false);
-        FlowSensor flowSensor = new FlowSensor("Water flow", hydroelectricPowerPlant);
-        SpeedSensor speedSensor = new SpeedSensor("Turbine speed", hydroelectricPowerPlant);
-        VoltageSensor voltageSensor = new VoltageSensor("Voltage of the generator", hydroelectricPowerPlant);
-        CurrentSensor currentSensor = new CurrentSensor("Current of the generator", hydroelectricPowerPlant);
-        GatePositionSensor gatePositionSensor = new GatePositionSensor("Position of the gate", hydroelectricPowerPlant);
+        SensorConfiguration[] sensors = CreateSensors(hydroelectricPowerPlant);
 
-        AnalogOutput gateControl = new AnalogOutput("Gate control");
-        DiscreteOutput startSystem = new DiscreteOutput("System start");
-        DiscreteOutput stopSystem = new DiscreteOutput("System stop");
-        Emergency emergency = new Emergency("Emergency");
-        AnalogOutput powerSignal = new AnalogOutput("Power control");
-        AnalogOutput turbineControl = new AnalogOutput("Turbine control");
+        var factory = new MqttClientFactory();
+        using var mqttClient = factory.CreateMqttClient();
 
+        var options = new MqttClientOptionsBuilder()
+            .WithTcpServer("127.0.0.1", 1883)
+            .Build();
 
-        hydroelectricPowerPlant.Sensors.Add(pressureSensorBefore);
-        hydroelectricPowerPlant.Sensors.Add(pressureSensorAfter);
-        hydroelectricPowerPlant.Sensors.Add(levelSensorHead);
-        hydroelectricPowerPlant.Sensors.Add(levelSensorTail);
-        hydroelectricPowerPlant.Sensors.Add(flowSensor);
-        hydroelectricPowerPlant.Sensors.Add(speedSensor);
-        hydroelectricPowerPlant.Sensors.Add(voltageSensor);
-        hydroelectricPowerPlant.Sensors.Add(currentSensor);
-        hydroelectricPowerPlant.Sensors.Add(gatePositionSensor);
+        await mqttClient.ConnectAsync(options);
+        Console.WriteLine("Connected to MQTT broker");
+        await RunSimulationAsync(mqttClient, sensors, hydroelectricPowerPlant);
 
-        hydroelectricPowerPlant.Outputs.Add(gateControl);
-        hydroelectricPowerPlant.Outputs.Add(startSystem);
-        hydroelectricPowerPlant.Outputs.Add(stopSystem);
-        hydroelectricPowerPlant.Outputs.Add(emergency);
-        hydroelectricPowerPlant.Outputs.Add(powerSignal);
-        hydroelectricPowerPlant.Outputs.Add(turbineControl);
+        await mqttClient.DisconnectAsync();
 
-        hydroelectricPowerPlant.UpdateState();
-        hydroelectricPowerPlant.CheckAlarms();
-
-        emergency.CheckAll(hydroelectricPowerPlant);
-
-        foreach (var alarmItem in hydroelectricPowerPlant.Alarms)
+        foreach (var sensor in sensors)
         {
-            if (alarmItem.GetStatus() == "Emergency")
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-            }
-            else if (alarmItem.GetStatus() == "Alarm")
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-            }
-
-            Console.WriteLine(alarmItem.Name + ": " + alarmItem.GetStatus());
-            Console.ResetColor();
-        }
-
-        hydroelectricPowerPlant.Monitor();
+            Console.WriteLine(
+                $"{sensor.Sensor.Name}: {sensor.Topic} ({sensor.Unit})");
+        } 
     }
+
+    private static SensorConfiguration[] CreateSensors(HydroelectricPowerPlant hydroelectricPowerPlant)
+    {
+        return
+        [
+            new SensorConfiguration(
+                new LevelSensor(
+                "Higher level",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/waterBody/level","m"),
+
+            new SensorConfiguration(
+                new LevelSensor(
+                "Lower level",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/waterBody/level","m"),
+
+            new SensorConfiguration(
+                new FlowSensor(
+                "Water flow",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/turbine/flow","m3/s"),
+
+            new SensorConfiguration(
+                new PressureSensor(
+                "Pressure before turbine",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/turbine/pressureBefore","MPa"),
+
+            new SensorConfiguration(
+                new PressureSensor(
+                "Pressure after turbine",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/turbine/pressureAfter","MPa"),
+
+            new SensorConfiguration(
+                new SpeedSensor(
+                "Turbine speed",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/turbine/speed","rpm"),
+
+            new SensorConfiguration(
+                new VoltageSensor(
+                "Voltage of the generator",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/generator/voltage","kV"),
+
+            new SensorConfiguration(
+                new CurrentSensor(
+                "Current of the generator",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/generator/current","A"),
+
+            new SensorConfiguration(
+                new GatePositionSensor(
+                "Position of the gate",
+                hydroelectricPowerPlant),
+            "hydroelectricPowerPlant/1/sensors/gate/position","%")
+
+        ];
+    }
+
+    private static async Task RunSimulationAsync(
+            IMqttClient mqttClient,
+            SensorConfiguration[] sensors,
+            HydroelectricPowerPlant hydroelectricPowerPlant)
+    {
+        for (int iteration = 1; iteration <= 10; iteration++)
+        {
+            Console.WriteLine($"Iteration {iteration}.");
+            hydroelectricPowerPlant.UpdateState();
+            foreach (var sensor in sensors)
+            {
+                await PublicSensorReadingAsync(mqttClient, sensor);
+            }
+
+            Console.WriteLine();
+            await Task.Delay(TimeSpan.FromSeconds(2));
+        }
+    }
+    private static async Task PublicSensorReadingAsync(
+        IMqttClient mqttClient,
+        SensorConfiguration configuration)
+    {
+
+    configuration.Sensor.ReadValue();
+
+    string payload = JsonSerializer.Serialize(new
+    {
+        value = Math.Round(configuration.Sensor.Value, 2),
+        unit = configuration.Unit,
+        measuredAtUtc = DateTimeOffset.UtcNow.ToString("HH:mm:ss")
+    });
+
+    var message = new MqttApplicationMessageBuilder()
+            .WithTopic(configuration.Topic)
+            .WithPayload(payload)
+            .Build();
+        await mqttClient.PublishAsync(message);
+        Console.WriteLine($"Published {configuration.Topic} -> {payload}");
+    }  
 }
