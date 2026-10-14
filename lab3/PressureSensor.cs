@@ -7,9 +7,8 @@ namespace lab3
     public class PressureSensor : Sensor
     {
         private readonly bool isBeforeTurbine;
-        public PressureSensor(string name, HydroelectricPowerPlant plant, bool isBeforeTurbine) : base(name, plant)
+        public PressureSensor(string name, HydroelectricPowerPlant plant) : base(name, plant)
         {
-            this.isBeforeTurbine = isBeforeTurbine;
         }
 
         public override void ReadValue()

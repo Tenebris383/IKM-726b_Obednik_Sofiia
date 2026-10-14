@@ -50,7 +50,7 @@ namespace lab3
             Alarms[7].Check(GeneratorCurrent);
             Alarms[8].Check(GatePosition);
         }
-
+        private double gateDirection = 1;
         public void Start()
         {
             IsRunning = true;
@@ -92,7 +92,19 @@ namespace lab3
                 GeneratorCurrent = 0;
                 return;
             }
-            GatePosition = random.NextDouble() * 100;
+            GatePosition += 10 * gateDirection;
+
+            if (GatePosition >= 100)
+            {
+                GatePosition = 100;
+                gateDirection = -1;
+            }
+
+            if (GatePosition <= 0)
+            {
+                GatePosition = 0;
+                gateDirection = 1;
+            }
             Flow = 5 * GatePosition;
             PressureBefore = 0.05 * UpperLevel;
             PressureAfter = 0.02 * TailLevel;
