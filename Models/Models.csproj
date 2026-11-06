@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Control\Control.csproj" />
+    <ProjectReference Include="..\Sensors\Sensors.csproj" />
+  </ItemGroup>
+
 </Project>

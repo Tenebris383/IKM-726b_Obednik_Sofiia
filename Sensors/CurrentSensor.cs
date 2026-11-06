@@ -1,16 +1,15 @@
-﻿using Models;
-
+﻿
 namespace Sensors
 {
     public class CurrentSensor : Sensor
     {
-        public CurrentSensor(string name, HydroelectricPowerPlant plant) : base(name, plant)
+        public CurrentSensor(string name) : base(name)
         {
         }
 
         public override void ReadValue()
         {
-            Value = Plant.GeneratorCurrent;
+            Value = Random.Shared.NextDouble() * 100;
 
             Console.WriteLine($"Sensor {Name} measured current {Value:F2} A.");
         }

@@ -1,15 +1,14 @@
-﻿using Models;
-
+﻿
 namespace Sensors
 {
     public class GatePositionSensor : Sensor
     {
-        public GatePositionSensor(string name, HydroelectricPowerPlant plant) : base(name, plant)
+        public GatePositionSensor(string name) : base(name)
         {
         }
         public override void ReadValue()
         {
-            Value = Plant.GatePosition;
+            Value = Random.Shared.NextDouble() * 100;
             Console.WriteLine($"Sensor {Name} is open {Value:F0} %.");
         }
     }

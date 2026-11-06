@@ -25,9 +25,11 @@ namespace Control
         {
             IsAlarm = value < MinValue || value > MaxValue;
 
+            double emergencyRange = (MaxValue - MinValue) * 0.1;
+
             IsEmergency =
-                value < MinValue * 0.9 ||
-                value > MaxValue * 1.1;
+                value < MinValue - emergencyRange ||
+                value > MaxValue + emergencyRange;
         }
 
         public string GetStatus()

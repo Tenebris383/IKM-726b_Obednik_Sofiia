@@ -1,24 +1,17 @@
-﻿using Models;
-
+﻿
 namespace Sensors
 {
     public class PressureSensor : Sensor
     {
-        private readonly bool isBeforeTurbine;
-        public PressureSensor(string name, HydroelectricPowerPlant plant) : base(name, plant)
+        public PressureSensor(string name) : base(name)
         {
         }
 
         public override void ReadValue()
         {
-            if (Name == "Pressure before turbine")
-            {
-                Value = Plant.PressureBefore;
-            }
-            else
-            {
-                Value = Plant.PressureAfter;
-            }
+
+                Value = Random.Shared.NextDouble() * 100;
+
 
             Console.WriteLine($"Sensor {Name} measured pressure {Value:F2} MPa.");
         }

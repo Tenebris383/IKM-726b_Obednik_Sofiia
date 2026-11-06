@@ -1,16 +1,15 @@
-﻿using Models;
-
+﻿
 namespace Sensors
 {
     public class VoltageSensor : Sensor
     {
-        public VoltageSensor(string name, HydroelectricPowerPlant plant) : base(name, plant)
+        public VoltageSensor(string name) : base(name)
         {
         }
 
         public override void ReadValue()
         {
-            Value = Plant.GeneratorVoltage;
+            Value = Random.Shared.NextDouble() * 100;
 
             Console.WriteLine($"Sensor {Name} measured voltage {Value:F2} kV.");
         }

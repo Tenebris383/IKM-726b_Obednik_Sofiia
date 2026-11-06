@@ -24,8 +24,6 @@ public class Program
             new Alarm("Gate Position", 0, 100)
         };
 
-        hydroelectricPowerPlant.Start();
-
         SensorConfiguration[] sensors = CreateSensors(hydroelectricPowerPlant);
 
         var factory = new MqttClientFactory();
@@ -53,57 +51,39 @@ public class Program
         return
         [
             new SensorConfiguration(
-                new LevelSensor(
-                "Higher level",
-                hydroelectricPowerPlant),
+                new LevelSensor("Higher level"),
             "hydroelectricPowerPlant/1/sensors/waterBody/level","m"),
 
             new SensorConfiguration(
-                new LevelSensor(
-                "Lower level",
-                hydroelectricPowerPlant),
+                new LevelSensor("Lower level"),
             "hydroelectricPowerPlant/1/sensors/waterBody/level","m"),
 
             new SensorConfiguration(
-                new FlowSensor(
-                "Water flow",
-                hydroelectricPowerPlant),
+                new FlowSensor("Water flow"),
             "hydroelectricPowerPlant/1/sensors/turbine/flow","m3/s"),
 
             new SensorConfiguration(
-                new PressureSensor(
-                "Pressure before turbine",
-                hydroelectricPowerPlant),
+                new PressureSensor("Pressure before turbine"),
             "hydroelectricPowerPlant/1/sensors/turbine/pressureBefore","MPa"),
 
             new SensorConfiguration(
-                new PressureSensor(
-                "Pressure after turbine",
-                hydroelectricPowerPlant),
+                new PressureSensor("Pressure after turbine"),
             "hydroelectricPowerPlant/1/sensors/turbine/pressureAfter","MPa"),
 
             new SensorConfiguration(
-                new SpeedSensor(
-                "Turbine speed",
-                hydroelectricPowerPlant),
+                new SpeedSensor("Turbine speed"),
             "hydroelectricPowerPlant/1/sensors/turbine/speed","rpm"),
 
             new SensorConfiguration(
-                new VoltageSensor(
-                "Voltage of the generator",
-                hydroelectricPowerPlant),
+                new VoltageSensor("Voltage of the generator"),
             "hydroelectricPowerPlant/1/sensors/generator/voltage","kV"),
 
             new SensorConfiguration(
-                new CurrentSensor(
-                "Current of the generator",
-                hydroelectricPowerPlant),
+                new CurrentSensor("Current of the generator"),
             "hydroelectricPowerPlant/1/sensors/generator/current","A"),
 
             new SensorConfiguration(
-                new GatePositionSensor(
-                "Position of the gate",
-                hydroelectricPowerPlant),
+                new GatePositionSensor("Position of the gate"),
             "hydroelectricPowerPlant/1/sensors/gate/position","%")
 
         ];
@@ -117,7 +97,7 @@ public class Program
         for (int iteration = 1; iteration <= 10; iteration++)
         {
             Console.WriteLine($"Iteration {iteration}.");
-            hydroelectricPowerPlant.UpdateState();
+
             foreach (var sensor in sensors)
             {
                 await PublicSensorReadingAsync(mqttClient, sensor);
