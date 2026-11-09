@@ -5,6 +5,7 @@ using Control;
 using Models;
 using Sensors;
 
+
 public class Program
 {
     public static async Task Main()
@@ -25,6 +26,9 @@ public class Program
         };
 
         SensorConfiguration[] sensors = CreateSensors(hydroelectricPowerPlant);
+
+
+        hydroelectricPowerPlant.Alarms = alarms;
 
         var factory = new MqttClientFactory();
         using var mqttClient = factory.CreateMqttClient();
@@ -52,39 +56,39 @@ public class Program
         [
             new SensorConfiguration(
                 new LevelSensor("Higher level"),
-            "hydroelectricPowerPlant/1/sensors/waterBody/level","m"),
+            "hydroelectricPowerPlant/1/sensors/waterBody/level","hydroelectricPowerPlant/1/alarms/waterBody/upperLevel","m"),
 
             new SensorConfiguration(
                 new LevelSensor("Lower level"),
-            "hydroelectricPowerPlant/1/sensors/waterBody/level","m"),
+            "hydroelectricPowerPlant/1/sensors/waterBody/level", "hydroelectricPowerPlant/1/alarms/waterBody/lowerLevel","m"),
 
             new SensorConfiguration(
                 new FlowSensor("Water flow"),
-            "hydroelectricPowerPlant/1/sensors/turbine/flow","m3/s"),
+            "hydroelectricPowerPlant/1/sensors/turbine/flow", "hydroelectricPowerPlant/1/alarms/turbine/flow","m3/s"),
 
             new SensorConfiguration(
                 new PressureSensor("Pressure before turbine"),
-            "hydroelectricPowerPlant/1/sensors/turbine/pressureBefore","MPa"),
+            "hydroelectricPowerPlant/1/sensors/turbine/pressureBefore", "hydroelectricPowerPlant/1/alarms/turbine/pressureBefore","MPa"),
 
             new SensorConfiguration(
                 new PressureSensor("Pressure after turbine"),
-            "hydroelectricPowerPlant/1/sensors/turbine/pressureAfter","MPa"),
+            "hydroelectricPowerPlant/1/sensors/turbine/pressureAfter", "hydroelectricPowerPlant/1/alarms/turbine/pressureAfter", "MPa"),
 
             new SensorConfiguration(
                 new SpeedSensor("Turbine speed"),
-            "hydroelectricPowerPlant/1/sensors/turbine/speed","rpm"),
+            "hydroelectricPowerPlant/1/sensors/turbine/speed", "hydroelectricPowerPlant/1/alarms/turbine/speed","rpm"),
 
             new SensorConfiguration(
                 new VoltageSensor("Voltage of the generator"),
-            "hydroelectricPowerPlant/1/sensors/generator/voltage","kV"),
+            "hydroelectricPowerPlant/1/sensors/generator/voltage", "hydroelectricPowerPlant/1/alarms/generator/voltage","kV"),
 
             new SensorConfiguration(
                 new CurrentSensor("Current of the generator"),
-            "hydroelectricPowerPlant/1/sensors/generator/current","A"),
+            "hydroelectricPowerPlant/1/sensors/generator/current", "hydroelectricPowerPlant/1/alarms/generator/current","A"),
 
             new SensorConfiguration(
                 new GatePositionSensor("Position of the gate"),
-            "hydroelectricPowerPlant/1/sensors/gate/position","%")
+            "hydroelectricPowerPlant/1/sensors/gate/position", "hydroelectricPowerPlant/1/alarms/gate/position", "%")
 
         ];
     }
@@ -101,6 +105,16 @@ public class Program
             foreach (var sensor in sensors)
             {
                 await PublicSensorReadingAsync(mqttClient, sensor);
+            }
+
+            for (int i = 0; i < sensors.Length; i++)
+            {
+                hydroelectricPowerPlant.Alarms[i].Check(sensors[i].Sensor.Value);
+
+                await PublicAlarmStatusAsync(
+                    mqttClient,
+                    sensors[i],
+                    hydroelectricPowerPlant.Alarms[i]);
             }
 
             Console.WriteLine();
@@ -127,5 +141,28 @@ public class Program
             .Build();
         await mqttClient.PublishAsync(message);
         Console.WriteLine($"Published {configuration.Topic} -> {payload}");
-    }  
+    }
+
+    private static async Task PublicAlarmStatusAsync(
+    IMqttClient mqttClient,
+    SensorConfiguration configuration,
+    Alarm alarm)
+    {
+        string payload = JsonSerializer.Serialize(new
+        {
+            status = alarm.GetStatus(),
+            value = Math.Round(configuration.Sensor.Value, 2),
+            measuredAtUtc = DateTimeOffset.UtcNow.ToString("HH:mm:ss")
+        });
+
+        var message = new MqttApplicationMessageBuilder()
+            .WithTopic(configuration.AlarmTopic)
+            .WithPayload(payload)
+            .Build();
+
+        await mqttClient.PublishAsync(message);
+
+        Console.WriteLine(
+            $"Published {configuration.AlarmTopic} -> {payload}");
+    }
 }
