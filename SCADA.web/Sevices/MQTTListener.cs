@@ -57,18 +57,32 @@ public class MQTTListener : BackgroundService
         {
             string topic = e.ApplicationMessage.Topic;
             string json = e.ApplicationMessage.ConvertPayloadToString();
-            MqttPayload? payload = JsonSerializer.Deserialize<MqttPayload>
-            (json, JsonOptions);
-            if (payload is not null)
+
+            if (topic.Contains("/alarms/"))
             {
-                SensorReading reading = new SensorReading
+                AlarmPayload? alarm = JsonSerializer.Deserialize<AlarmPayload>(
+                    json, JsonOptions);
+
+                if (alarm is not null)
                 {
-                    Topic = topic,
-                    Value = payload.Value,
-                    Unit = payload.Unit,
-                    MeasuredAtUtc = payload.MeasuredAtUtc
-                };
-                _cache.Update(reading);
+                    _cache.UpdateAlarm(topic, alarm.Status);
+                }
+            }
+            else if (topic.Contains("/sensors/"))
+            {
+                MqttPayload? payload = JsonSerializer.Deserialize<MqttPayload>
+            (json, JsonOptions);
+                if (payload is not null)
+                {
+                    SensorReading reading = new SensorReading
+                    {
+                        Topic = topic,
+                        Value = payload.Value,
+                        Unit = payload.Unit,
+                        MeasuredAtUtc = payload.MeasuredAtUtc
+                    };
+                    _cache.Update(reading);
+                }
             }
         }
         catch (Exception ex)
@@ -83,6 +97,10 @@ public class MQTTListener : BackgroundService
         public double Value { get; set; }
         public string Unit { get; set; } = "";
         public DateTimeOffset MeasuredAtUtc { get; set; }
+    }
+    private class AlarmPayload
+    {
+        public string Status { get; set; } = "Normal";
     }
 }
 

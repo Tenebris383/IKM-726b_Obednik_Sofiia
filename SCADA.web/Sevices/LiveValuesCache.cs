@@ -15,5 +15,16 @@ namespace SCADA.web.Sevices
         {
             return _values.Values.ToList();
         }
+        private readonly ConcurrentDictionary<string, string> _alarms = new();
+
+        public void UpdateAlarm(string topic, string status)
+        {
+            _alarms[topic] = status;
+        }
+
+        public Dictionary<string, string> GetAllAlarms()
+        {
+            return _alarms.ToDictionary(x => x.Key, x => x.Value);
+        }
     }
 }

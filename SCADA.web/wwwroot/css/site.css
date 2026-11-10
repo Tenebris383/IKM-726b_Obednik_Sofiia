@@ -47,7 +47,21 @@ body {
     font-size: 14px;
 }
 
-    .sensor .value {
-        font-size: 20px;
-        font-weight: bold;
+.sensor .value {
+    font-size: 20px;
+    font-weight: bold;
+}
+    .sensor.normal {
+        background-color: #d4edda;
+        border: 2px solid #28a745;
+    }
+
+    .sensor.alarm {
+        background-color: #fff3cd;
+        border: 2px solid #ffc107;
+    }
+
+    .sensor.emergency {
+        background-color: #f8d7da;
+        border: 2px solid #dc3545;
     }

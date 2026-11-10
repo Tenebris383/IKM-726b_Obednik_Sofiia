@@ -8,6 +8,7 @@ namespace Sensors.Entities
     {
         public string Name { get; set; } = "";
         public string Topic { get; set; } = "";
+        public string AlarmTopic { get; set; } = "";
         public int X { get; set; }
         public int Y { get; set; }
     }

@@ -23,5 +23,10 @@ namespace SCADA.web.Controllers
         {
             return Json(_cache.GetAll());
         }
+        [HttpGet]
+        public IActionResult Alarms()
+        {
+            return Json(_cache.GetAllAlarms());
+        }
     }
 }

@@ -9,20 +9,47 @@ async function refresh()
 {
     try 
     {
-        const res = await fetch('/Scheme/Current');
+        const [sensorResponse, alarmResponse] = await Promise.all([
+            fetch('/Scheme/Current'),
+            fetch('/Scheme/Alarms')
+        ]);
 
-        if (!res.ok) {
+        if (!sensorResponse.ok || !alarmResponse.ok) {
             throw new Error(`HTTP ${res.status}`);
         }
 
-        const list = await res.json();
+        const readings = await sensorResponse.json();
+        const alarms = await alarmResponse.json();
 
-        console.log('Received data', list);
+        readings.forEach(showReading);
 
-        list.forEach(showReading);
+        Object.entries(alarms).forEach(([topic, status]) => {
+            showAlarm(topic, status);
+        });
     } catch (e) {
         console.error('Update error', e)
     }
 }
+
+function showAlarm(topic, status) {
+    const elements = document.querySelectorAll(
+        `.sensor[data-alarm-topic="${topic}"]`
+    );
+
+    elements.forEach(el => {
+        el.classList.remove('normal', 'alarm', 'emergency');
+
+        if (status === 'Normal') {
+            el.classList.add('normal');
+        }
+        else if (status === 'Alarm') {
+            el.classList.add('alarm');
+        }
+        else if (status === 'Emergency') {
+            el.classList.add('emergency');
+        }
+    });
+}
+
 refresh();
 setInterval(refresh, 2000);
