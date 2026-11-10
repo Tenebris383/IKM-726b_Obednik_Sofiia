@@ -29,3 +29,25 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+.scheme {
+    position: relative;
+    width: 900px;
+    height: 450px;
+    border: 1px solid #ccc;
+    background: url('/img/HydroelectricPowerPlant.png') 0 0 / 100% 100% no-repeat;
+}
+
+.sensor {
+    position: absolute;
+    width: 180px;
+    padding: 6px 10px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .25);
+    font-size: 14px;
+}
+
+    .sensor .value {
+        font-size: 20px;
+        font-weight: bold;
+    }

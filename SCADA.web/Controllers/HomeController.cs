@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SCADA.web.Models;
+using SCADA.web.Sevices;
 using System.Diagnostics;
 
 namespace SCADA.web.Controllers

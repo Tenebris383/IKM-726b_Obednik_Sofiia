@@ -10,7 +10,15 @@ async function refresh()
     try 
     {
         const res = await fetch('/Scheme/Current');
+
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+
         const list = await res.json();
+
+        console.log('Received data', list);
+
         list.forEach(showReading);
     } catch (e) {
         console.error('Update error', e)
