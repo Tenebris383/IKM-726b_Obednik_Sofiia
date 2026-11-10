@@ -18,9 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\source\repos\lab3\Control\Control.csproj" />
-    <ProjectReference Include="..\..\source\repos\lab3\lab3\Obednik_IKM-M726b.csproj" />
-    <ProjectReference Include="..\..\source\repos\lab3\Sensors\Sensors.csproj" />
+    <ProjectReference Include="..\Control\Control.csproj" />
+    <ProjectReference Include="..\lab3\Obednik_IKM-M726b.csproj" />
+    <ProjectReference Include="..\Sensors\Sensors.csproj" />
   </ItemGroup>
 
 </Project>

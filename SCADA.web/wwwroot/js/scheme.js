@@ -1,6 +1,5 @@
 ﻿function showReading(r) {
-    document.querySelectorAll(`.sensor[data-topic="${r.topics}"]`).forEach(el
-        => {
+    document.querySelectorAll(`.sensor[data-topic="${r.topics}"]`).forEach(el => {
         el.querySelector('.value').textContent = `${r.value} ${r.unit}`;
         
     });
