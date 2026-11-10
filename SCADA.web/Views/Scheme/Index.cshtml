@@ -1,0 +1,21 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Мнемосхема";
+}
+<h2>Мнемосхема гідроелектростанції</h2>
+<div class="scheme">
+@foreach (SensorView s in Model)
+{
+    <div class="sensor" data-topic="@s.Topic"
+    style="left: @(s.X)px; top: @(s.Y)px;">
+    <div class="name">@s.Name</div>
+    <div class="value">-</div>
+    </div>
+}
+</div>
+@section Scripts
+{
+    <script src="~/js/scheme.js"> </script>
+}
