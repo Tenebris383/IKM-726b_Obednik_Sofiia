@@ -132,7 +132,7 @@ public class Program
     {
         value = Math.Round(configuration.Sensor.Value, 2),
         unit = configuration.Unit,
-        measuredAtUtc = DateTimeOffset.UtcNow.ToString("HH:mm:ss")
+        measuredAtUtc = DateTimeOffset.UtcNow
     });
 
     var message = new MqttApplicationMessageBuilder()
@@ -152,7 +152,7 @@ public class Program
         {
             status = alarm.GetStatus(),
             value = Math.Round(configuration.Sensor.Value, 2),
-            measuredAtUtc = DateTimeOffset.UtcNow.ToString("HH:mm:ss")
+            measuredAtUtc = DateTimeOffset.UtcNow
         });
 
         var message = new MqttApplicationMessageBuilder()

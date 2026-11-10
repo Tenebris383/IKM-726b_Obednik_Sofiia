@@ -36,11 +36,11 @@ namespace SCADA.web.Sevices
             },
             new SensorView
             {
-                Name = "Current of the generator", Topic = "hydroelectricPowerPlant/1/alarms/generator/current", X = 650, Y = 105
+                Name = "Current of the generator", Topic = "hydroelectricPowerPlant/1/sensors/generator/current", X = 650, Y = 105
             },
             new SensorView
             {
-                Name = "Position of the gate", Topic = "hydroelectricPowerPlant/1/alarms/gate/position", X = 15, Y = 145
+                Name = "Position of the gate", Topic = "hydroelectricPowerPlant/1/sensors/gate/position", X = 15, Y = 145
             }
         };
 
