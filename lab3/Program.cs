@@ -55,12 +55,12 @@ public class Program
         return
         [
             new SensorConfiguration(
-                new LevelSensor("Higher level"),
-            "hydroelectricPowerPlant/1/sensors/waterBody/level","hydroelectricPowerPlant/1/alarms/waterBody/upperLevel","m"),
+                new LevelSensor("Upper level"),
+            "hydroelectricPowerPlant/1/sensors/waterBody/upperLevel","hydroelectricPowerPlant/1/alarms/waterBody/upperLevel","m"),
 
             new SensorConfiguration(
                 new LevelSensor("Lower level"),
-            "hydroelectricPowerPlant/1/sensors/waterBody/level", "hydroelectricPowerPlant/1/alarms/waterBody/lowerLevel","m"),
+            "hydroelectricPowerPlant/1/sensors/waterBody/lowerLevel", "hydroelectricPowerPlant/1/alarms/waterBody/lowerLevel","m"),
 
             new SensorConfiguration(
                 new FlowSensor("Water flow"),
