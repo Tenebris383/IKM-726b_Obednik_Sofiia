@@ -8,11 +8,11 @@ namespace SCADA.web.Sevices
         {
             new SensorView
             {
-                Name = "Higher level", Topic = "hydroelectricPowerPlant/1/sensors/waterBody/level", X = 15, Y = 30
+                Name = "Higher level", Topic = "hydroelectricPowerPlant/1/sensors/waterBody/upperLevel", X = 15, Y = 30
             },
             new SensorView
             {
-                Name = "Lower level", Topic = "hydroelectricPowerPlant/1/sensors/waterBody/level", X = 700, Y = 360
+                Name = "Lower level", Topic = "hydroelectricPowerPlant/1/sensors/waterBody/lowerLevel", X = 700, Y = 360
             },
             new SensorView
             {

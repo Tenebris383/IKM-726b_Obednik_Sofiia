@@ -27,12 +27,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <div class="scada-clock">
+                        <b id="clock-time">
+                            @DateTime.Now.ToString("HH:mm:ss")
+                        </b>
+                        <small id="clock-date">@DateTime.Now.ToString("dddd,d MMMM yyyy 'р.'", new System.Globalization.CultureInfo("uk-UA"))</small>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+        <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -46,6 +51,19 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('clock-time').textContent =
+                    now.toLocaleTimeString('uk-UA');
+                document.getElementById('clock-date').textContent =
+                    now.toLocaleDateString('uk-UA',
+                        {
+                            weekday: 'long', day: 'numeric', month: 'long', year:
+                                'numeric'
+                        });
+            }, 1000);
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
