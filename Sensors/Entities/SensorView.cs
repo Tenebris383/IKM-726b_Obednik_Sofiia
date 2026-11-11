@@ -10,5 +10,7 @@ namespace Sensors.Entities
         public string Topic { get; set; } = "";
         public int X { get; set; }
         public int Y { get; set; }
+        public int Min { get; set; }
+        public int Max { get; set; }
     }
 }
