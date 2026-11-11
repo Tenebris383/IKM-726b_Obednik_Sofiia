@@ -2,9 +2,11 @@
 using SCADA.web.Data;
 using SCADA.web.Sevices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SCADA.web.Controllers
 {
+    [Authorize]
     public class SchemeController : Controller
     {
         private readonly LiveValuesCache _cache;
@@ -29,6 +31,7 @@ namespace SCADA.web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CanReadSavings")]
 
         public async Task<IActionResult> Save()
         {
