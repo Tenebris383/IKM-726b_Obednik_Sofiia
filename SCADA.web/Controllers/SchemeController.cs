@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SCADA.web.Data;
 using SCADA.web.Sevices;
+using Microsoft.EntityFrameworkCore;
 
 namespace SCADA.web.Controllers
 {
@@ -29,7 +30,7 @@ namespace SCADA.web.Controllers
 
         [HttpPost]
 
-        public IActionResult Save()
+        public async Task<IActionResult> Save()
         {
             foreach (var sensor in _cache.GetAll()) 
             {
@@ -44,14 +45,16 @@ namespace SCADA.web.Controllers
                 });
             }
 
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             return RedirectToAction("History");
         }
 
-        public IActionResult History()
+        public async Task<IActionResult> History()
         {
-            return View(_db.SensorSamples.OrderByDescending(s=>s.Id).Take(50).ToList());
+            var samples = await _db.SensorSamples.OrderByDescending(s => s.Id).Take(50).ToListAsync();
+
+            return View(samples);
         }
 
     }
